@@ -142,7 +142,7 @@ fabric.properties
 
 player.c
 player_*
-/.idea/
+/.idea/*
 src/main/resources/levels/*
 !src/main/resources/levels/.gitkeep
 src/main/resources/bomberman.h
