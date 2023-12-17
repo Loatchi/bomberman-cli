@@ -146,3 +146,4 @@ player_*
 src/main/resources/levels
 src/main/resources/bomberman.h
 src/main/resources/bomberman.o
+gradle
