@@ -143,3 +143,6 @@ fabric.properties
 player.c
 player_*
 /.idea/discord.xml
+src/main/resources/levels
+src/main/resources/bomberman.h
+src/main/resources/bomberman.o
