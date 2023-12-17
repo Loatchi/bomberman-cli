@@ -1,0 +1,1 @@
+java -jar /usr/local/share/bomberman-cli/bomberman-cli.jar "$@"
