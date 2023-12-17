@@ -33,7 +33,7 @@ application {
     mainClass.set("MainKt")
 }
 
-tasks.jar { // could also be a new task rather than the default one
+tasks.jar {
     manifest {
         attributes["Main-Class"] = application.mainClass
     }
