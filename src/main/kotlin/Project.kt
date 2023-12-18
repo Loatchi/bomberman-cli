@@ -33,6 +33,8 @@ class Project(
     private val changeStdoutPrintfToStderrPrintf: Boolean = true,
     private val isForBenchmark: Boolean = true): AutoCloseable{
 
+    class PlayerDotCCompileErrorException(message: String): Exception(message)
+
     lateinit var tmpDir: File
     private lateinit var tmpBombermanH: File
     private lateinit var tmpBombermanO: File
@@ -153,10 +155,18 @@ class Project(
         if(destination == null)
             destination = File(tmpDir, "bomberman")
 
+        var error: String
+
         runBlocking {
-            print(executeCommand(this, listOf("gcc", *compilerAdditionalArgs.toTypedArray(),
-                "-o", destination!!.absolutePath, tmpPlayerC.absolutePath, tmpBombermanO.absolutePath), stopAfterMilli = 2000))
+            error = executeCommand(this, listOf("gcc", "-Wall", *compilerAdditionalArgs.toTypedArray(),
+                "-o", destination!!.absolutePath, tmpPlayerC.absolutePath,
+                tmpBombermanO.absolutePath), stopAfterMilli = 2000)
         }
+
+        print(error)
+
+        if(error != "")
+            throw PlayerDotCCompileErrorException("Remember that your player.c MUST compile with -Wall.")
 
         return destination!!
     }
