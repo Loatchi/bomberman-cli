@@ -83,9 +83,13 @@ class BombermanCompile: CliktCommand(name = "compile", help =
         }
     }
 
-    private val output: Path by argument().path().help {
-        "The path to the final executable file."
-    }
+    private val output: Path by argument()
+        .path()
+        .help { "The path to the final executable file." }
+        .validate {
+            if(it == commonOptions.playerC)
+                fail("You are going to erase player.c. Use --help")
+        }
     private val commonOptions by BombermanCommonOptions()
 
     override fun run() {
