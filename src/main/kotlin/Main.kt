@@ -291,7 +291,7 @@ class BombermanGame: CliktCommand(name = "play", help =
                                     "ghost=${partialResult.ghostEnemyKilled})", "")
                         }
                         10 -> {
-                            printStat(line, "EnemyKilled", "(bomb=${partialResult.bombBonusTaken}," +
+                            printStat(line, "BonusTaken", "(bomb=${partialResult.bombBonusTaken}," +
                                     "flame=${partialResult.flameBonusTaken})", "")
                         }
                         11 -> {
