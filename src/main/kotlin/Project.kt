@@ -67,7 +67,7 @@ class Project(
                 ".*?" +
                 "int\\s+(?<RemainingBombsVarName>[a-zA-Z_\\d]+).*?" +
                 "int\\s+(?<ExplosionRangeVarName>[a-zA-Z_\\d]+).*?\\)\\s*\\{)", setOf(RegexOption.DOT_MATCHES_ALL))
-        val printfStdoutRegex = Regex("(?<!f)printf\\s*\\((?<PrintfArgs>.*?)\\)")
+        val printfStdoutRegex = Regex("(?<!f)printf\\s*\\((?<PrintfArgs>(?:.|\\n)*?)\\)\\s*;")
         var playerCSource = playerC.readText()
 
         if(!isForBenchmark){
@@ -76,7 +76,7 @@ class Project(
         }
 
         if(changeStdoutPrintfToStderrPrintf)
-            playerCSource = playerCSource.replace(printfStdoutRegex) { "fprintf(stderr, ${it.groups["PrintfArgs"]?.value})" }
+            playerCSource = playerCSource.replace(printfStdoutRegex) { "fprintf(stderr, ${it.groups["PrintfArgs"]?.value});" }
 
         val match = bombermanFunctionRegex.find(playerCSource)
         if(match != null){
