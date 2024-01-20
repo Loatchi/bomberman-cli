@@ -34,7 +34,11 @@ import kotlin.time.measureTime
 class BombermanCommonOptions: OptionGroup("Default"){
 
     val playerC: Path by option("--player-c")
-        .path(mustBeReadable = true, mustExist = true)
+        .path(mustBeReadable = true,
+            mustExist = true,
+            canBeDir = false,
+            canBeFile = true,
+            canBeSymlink = false)
         .default(Path("player.c"))
         .help { "The player.c file" }
         .validate {
@@ -417,14 +421,15 @@ class BombermanBenchmark: CliktCommand(name = "benchmark", help = """
                 " `{ int : BombermanBatchResult }` where `int` is a level."
         }
 
-    private val ignoreProblematicSeed: Boolean by option("--ignore-problematic-seed", "-p")
-        .flag(default = false)
+    private val printedSeeds: List<GameResult> by option("--print-seeds")
+        .enum<GameResult>()
+        .varargValues(max = GameResult.entries.size)
+        .default(listOf(GameResult.TIMEOUT))
         .help { "When running a batch of games it can happen that some game timeouts or segfaults. By default <benchmark> will " +
                 "print the seed that were problematic. It is useful if you use --save-all-games and parse the json elsewhere" }
 
     private val commonOptions by BombermanCommonOptions()
-    private val problematicSeeds = mutableListOf<Long>()
-
+    private val seeds: MutableMap<Long, MutableMap<GameResult, MutableList<Long>>> = mutableMapOf()
     private val batchSize = Runtime.getRuntime().availableProcessors()
 
     override fun run() {
@@ -475,8 +480,13 @@ class BombermanBenchmark: CliktCommand(name = "benchmark", help = """
                     }
                 }
 
-                if(!ignoreProblematicSeed)
-                    println(problematicSeeds.joinToString(prefix = "problematicSeeds="))
+                for(level in levels){
+                    val levelSeeds = seeds[level.toLong()] ?: emptyMap()
+                    for(result in printedSeeds){
+                        val resultSeeds = levelSeeds[result] ?: emptyList()
+                        println(resultSeeds.joinToString(prefix = "level${level}_${result}_seeds="))
+                    }
+                }
                 jsonFile?.writeText(Json.encodeToString(batchResults))
                 println("Computed: $games games (per level) in $time.")
                 if(jsonFile == null)
@@ -505,9 +515,9 @@ class BombermanBenchmark: CliktCommand(name = "benchmark", help = """
         }
         val gameResults = jobs.awaitAll().filterNotNull()
         gameResults.forEach {
-            if(it.result == GameResult.ERROR || it.result == GameResult.TIMEOUT){
-                problematicSeeds.add(it.seed)
-            }
+            seeds.getOrPut(it.level.toLong()) { mutableMapOf() }
+                .getOrPut(it.result) { mutableListOf() }
+                    .add(it.seed)
         }
 
         bombermanGameResults
