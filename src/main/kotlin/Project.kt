@@ -61,7 +61,7 @@ class Project(
         Files.copy(bombermanHInputStream, tmpBombermanH.toPath())
         Files.copy(bombermanOInputStream, tmpBombermanO.toPath())
 
-        val returnRegex = Regex("\\s*return\\s+(?<Action>[a-zA-Z\\d]+)\\s*;")
+        val returnRegex = Regex("\\s*return\\s+(?<Action>[a-zA-Z_(),\\s\\d]+)\\s*;")
         val bombermanFunctionRegex = Regex("(?<BombermanFunction>action\\s*bomberman\\s*\\(.*?" +
                 "tree\\s+(?<mapVarName>[a-zA-Z_\\d]+)" +
                 ".*?" +
@@ -138,7 +138,6 @@ class Project(
         } else {
             exitProcess(1)
         }
-        println("ay")
         isEnvSetup = true
     }
 
