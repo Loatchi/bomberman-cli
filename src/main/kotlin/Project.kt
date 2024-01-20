@@ -101,7 +101,7 @@ class Project(
             while (retMatch != null){
                 val replacement = """
                     
-                      printf("Action is: ");
+                      printf("\nAction is: ");
                       switch(${retMatch.groups["Action"]!!.value}) {
                       case BOMBING:
                         printf("BOMBING\n");
@@ -138,7 +138,7 @@ class Project(
         } else {
             exitProcess(1)
         }
-
+        println("ay")
         isEnvSetup = true
     }
 
@@ -681,6 +681,7 @@ class Bomberman(
         stderr: BufferedReader,
         stdin: BufferedWriter
     ) {
+        println(line)
         builder.consume(line, sep)
     }
 
