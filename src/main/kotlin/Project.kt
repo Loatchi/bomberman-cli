@@ -681,7 +681,6 @@ class Bomberman(
         stderr: BufferedReader,
         stdin: BufferedWriter
     ) {
-        println(line)
         builder.consume(line, sep)
     }
 
