@@ -100,6 +100,7 @@ class Project(
 
             while (retMatch != null){
                 val replacement = """
+                    
                       printf("Action is: ");
                       switch(${retMatch.groups["Action"]!!.value}) {
                       case BOMBING:
